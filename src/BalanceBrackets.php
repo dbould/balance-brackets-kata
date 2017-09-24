@@ -5,8 +5,9 @@ namespace BalanceBrackets;
 class BalanceBrackets
 {
     private $matches = [];
-    private $left = 0;
-    private $right = 0;
+    private $unclosed = [];
+    private $left;
+    private $right;
 
     public function __construct()
     {
@@ -21,10 +22,6 @@ class BalanceBrackets
 
         $match = $this->checkBracket($brackets);
 
-        if ($this->left != $this->right) {
-            $match = false;
-        }
-
         return $match;
     }
 
@@ -36,11 +33,20 @@ class BalanceBrackets
             if (in_array($brackets[$i], array_keys($this->matches))) {
                 $this->left++;
                 $bracketsBalanced = $this->findClosingBracket($brackets, $i);
+
+                if ($bracketsBalanced === false) {
+                    break;
+                }
             } elseif (in_array($brackets[$i], $this->matches)) {
+                $this->right++;
                 continue;
             } else {
                 $bracketsBalanced = false;
             }
+        }
+
+        if ($this->left != $this->right) {
+            $bracketsBalanced = false;
         }
 
         return $bracketsBalanced;
@@ -48,13 +54,34 @@ class BalanceBrackets
 
     public function findClosingBracket($brackets, $key)
     {
+        $match = false;
+
         for ($i = $key; $i < count($brackets); $i++) {
-            if ($brackets[$i] == $this->matches[$brackets[$key]]) {
-                $this->right++;
-                return true;
+
+            if (in_array($brackets[$i], array_keys($this->matches))) {
+                $this->unclosed[] = $brackets[$i];
+            }
+
+            if (in_array($brackets[$i], $this->matches)) {
+                if ($this->matches[array_pop($this->unclosed)] != $brackets[$i]) {
+                    $match = false;
+                    break;
+                }
+                else if ($this->matches[$brackets[$key]] == $brackets[$i]) {
+                    $match = true;
+                    break;
+                }
+            } elseif (isset($brackets[$i]) && $brackets[$i] == $this->matches[$brackets[$key]]) {
+                $match = true;
+                break;
+
+            } else if (isset($brackets[$i]) && $brackets[$i] != $this->matches[$brackets[$key]] &&
+                       in_array($brackets[$i], $this->matches)) {
+                $match = false;
+                break;
             }
         }
 
-        return false;
+        return $match;
     }
 }

@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class BalanceBracketsTest extends TestCase
 {
+
     public function testSimpleBracketPass()
     {
         $balanceBrackets = new BalanceBrackets();
@@ -180,6 +181,30 @@ class BalanceBracketsTest extends TestCase
         $balanceBrackets = new BalanceBrackets();
 
         $testCase = "{[()]}[";
+
+        $actual = $balanceBrackets->checkIsBalanced($testCase);
+        $expected = false;
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testThreeTypesEnclosedFail3()
+    {
+        $balanceBrackets = new BalanceBrackets();
+
+        $testCase = "[{(})]";
+
+        $actual = $balanceBrackets->checkIsBalanced($testCase);
+        $expected = false;
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testRemainingUnmatchedClosingBracket()
+    {
+        $balanceBrackets = new BalanceBrackets();
+
+        $testCase = "{[()]}}";
 
         $actual = $balanceBrackets->checkIsBalanced($testCase);
         $expected = false;
