@@ -71,14 +71,6 @@ class BalanceBrackets
                     $match = true;
                     break;
                 }
-            } elseif (isset($brackets[$i]) && $brackets[$i] == $this->matches[$brackets[$key]]) {
-                $match = true;
-                break;
-
-            } else if (isset($brackets[$i]) && $brackets[$i] != $this->matches[$brackets[$key]] &&
-                       in_array($brackets[$i], $this->matches)) {
-                $match = false;
-                break;
             }
         }
 
